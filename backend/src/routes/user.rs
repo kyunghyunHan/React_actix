@@ -8,7 +8,7 @@ pub async fn echo(req_body: String) -> impl Responder {
 struct MyObj {
     data: String,
 }
-#[get("/ed")]
+#[get("/read")]
 pub async fn index() -> Result<impl Responder> {
     let obj = MyObj {
         data: "Hello in Rust".to_string(),
