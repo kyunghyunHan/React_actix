@@ -49,7 +49,7 @@ function App() {
   //read
   const read = async () => {
     await axios
-      .get("http://localhost:8000/ed", {})
+      .get("http://localhost:8000/read", {})
       .then((res) => {
         console.log(res.data);
         setData(res.data);
