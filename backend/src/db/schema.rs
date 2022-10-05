@@ -2,10 +2,10 @@
 
 diesel::table! {
     users (id) {
-        id -> Integer,
-        username -> Varchar,
-        email -> Varchar,
-        password -> Varchar,
-        login_session -> Varchar,
+        id -> Unsigned<Bigint>,
+        first_name -> Text,
+        last_name -> Text,
+        email -> Text,
+        created_at -> Timestamp,
     }
 }

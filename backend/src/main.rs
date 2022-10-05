@@ -1,12 +1,13 @@
 extern crate actix_web;
 #[macro_use]
 extern crate diesel;
-
 use actix_cors::Cors;
+
 use actix_web::{App, HttpServer};
 
 mod db;
 mod routes;
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {

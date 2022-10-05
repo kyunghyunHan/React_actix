@@ -1,59 +1,19 @@
-#![allow(proc_macro_derive_resolution_fallback)]
-
 use crate::db::schema::users;
-use actix_web::Error;
-use diesel::prelude::*;
-use diesel::MysqlConnection;
+use serde::{Deserialize, Serialize};
 
-use super::connection;
-
-#[derive(Identifiable, Queryable)]
+#[derive(Debug, Serialize, Deserialize, Queryable)]
 pub struct User {
     pub id: i32,
-    pub username: String,
+    pub first_name: String,
+    pub last_name: String,
     pub email: String,
-    pub password: String,
-    pub login_session: String,
+    pub created_at: chrono::NaiveDateTime,
 }
-
-#[derive(Insertable)]
+#[derive(Insertable, Debug)]
 #[table_name = "users"]
-pub struct UserDTO {
-    pub username: String,
-    pub email: String,
-    pub password: String,
-    pub login_session: String,
+pub struct NewUser<'a> {
+    pub first_name: &'a str,
+    pub last_name: &'a str,
+    pub email: &'a str,
+    pub created_at: chrono::NaiveDateTime,
 }
-
-pub struct LoginDTO {
-    pub username_or_email: String,
-    pub password: String,
-}
-
-#[derive(Insertable)]
-#[table_name = "users"]
-pub struct LoginInfoDTO {
-    pub username: String,
-    pub login_session: String,
-}
-
-// pub fn create_post<'a>(
-//     conn: &MysqlConnection,
-//     username: &'a str,
-//     email: &'a str,
-//     password: &'a str,
-//     login_session: &'a str,
-// ) -> String {
-//     let new_post = UserDTO {
-//         username,
-//         email,
-//         password,
-//         login_session,
-//     };
-
-//     diesel::insert_into(users::table)
-//         .values(&new_post)
-//         .execute(conn)
-//         .unwrap();
-//     format!("hey")
-// }

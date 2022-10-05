@@ -1,8 +1,8 @@
 -- Your SQL goes here
 CREATE TABLE users (
-  id INT(11) PRIMARY KEY AUTO_INCREMENT,
-  username  VARCHAR(60) NOT NULL,
-  email VARCHAR(60) NOT NULL,
-  password  VARCHAR(60) NOT NULL,
-  login_session VARCHAR(60) NOT NULL
+id SERIAL NOT NULL PRIMARY KEY,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL
 )
