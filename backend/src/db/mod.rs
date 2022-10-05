@@ -1,2 +1,3 @@
-pub mod connecion;
+pub mod connection;
+pub mod schema;
 pub mod user;
