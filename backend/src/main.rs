@@ -18,7 +18,8 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(db::connection::init_pool())
             .wrap(cors) // 해결!
-            .service(routes::user::echo)
+            .service(routes::user::write_data)
+            .service(routes::user::index)
     })
     .bind("127.0.0.1:8000")?
     .run()

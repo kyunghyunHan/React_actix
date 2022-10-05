@@ -15,16 +15,16 @@ function App() {
     e.preventDefault();
 
     let body = {
-      name: userName,
-      identity: "1",
-      hometown: "2",
-      age: 29,
+      first_name: userName,
+      last_name: "1",
+      email: "2",
+     
     };
 
     const json = JSON.stringify(body);
 
     await axios
-      .post("http://localhost:8000/join", json)
+      .post("http://localhost:8000/write_post", json)
       .then((res) => console.log(res))
       .catch((err) => {
         console.log(err);
@@ -61,7 +61,7 @@ function App() {
   //update
   const update = async () => {
     await axios
-      .post("http://localhost:8000/read", {})
+      .post("http://localhost:8000/echo", {})
       .then((res) => {
         console.log(res.data);
       })
