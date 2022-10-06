@@ -47,12 +47,18 @@ function App() {
       });
   };
   //read
+  let body2 = {
+    data: "22"
+   
+  };
+
+  const json = JSON.stringify(body2);
+  console.log(json)
   const read = async () => {
     await axios
-      .post("http://localhost:8000/read2", {dd:"22"})
+      .post("http://localhost:8000/tweets")
       .then((res) => {
         console.log(res.data);
-        setData(res.data);
       })
       .catch((err) => {
         console.log(err);

@@ -3,7 +3,7 @@ extern crate actix_web;
 extern crate diesel;
 use actix_cors::Cors;
 
-use actix_web::{middleware, web, App, HttpServer};
+use actix_web::{middleware, web, App, HttpResponse, HttpServer};
 
 mod db;
 mod routes;
@@ -20,9 +20,8 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .app_data(data.clone())
             .wrap(middleware::Logger::default())
-            // .service(routes::user::index2)
-            .service(routes::user::index)
             .service(routes::user::echo)
+            .service(routes::user::tweet_create)
     })
     .bind("127.0.0.1:8000")?
     .run()
