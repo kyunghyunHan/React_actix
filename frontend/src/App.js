@@ -14,17 +14,16 @@ function App() {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    let body = {
-      first_name: userName,
-      last_name: "1",
-      email: "2",
+    let body2 = {
+      first_name: "userName",
+        last_name: "1",
+        email: "2",
      
     };
 
-    const json = JSON.stringify(body);
-   console.log(json)
+
     await axios
-      .post("http://localhost:8000/write_post", json)
+      .post("http://localhost:8000/write_post",body2)
       .then((res) => console.log(res))
       .catch((err) => {
         console.log(err);
@@ -48,7 +47,9 @@ function App() {
   };
   //read
   let body2 = {
-    data: "22"
+    first_name: "userName",
+      last_name: "1",
+      email: "2",
    
   };
 
@@ -56,7 +57,7 @@ function App() {
   console.log(json)
   const read = async () => {
     await axios
-      .post("http://localhost:8000/tweets")
+      .post("http://localhost:8000/tweets",body2)
       .then((res) => {
         console.log(res.data);
       })
@@ -67,7 +68,7 @@ function App() {
   
   const update = async () => {
     await axios
-      .post("http://localhost:8000/echo", "2")
+      .post("http://localhost:8000/data",body2)
       .then((res) => {
         console.log(res.data);
       })
