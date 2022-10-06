@@ -1,9 +1,9 @@
-use crate::db;
-use actix_web::Error;
-use chrono::{NaiveDateTime, Utc};
-use db::connection;
-use db::schema::users;
+// use crate::db::user::users::dsl::users;
+use crate::db::{self};
 
+// use chrono::{NaiveDateTime, Utc};
+// use db::connection::DbPool;
+use db::schema::users;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, AsChangeset)]
@@ -14,6 +14,7 @@ pub struct User {
     pub last_name: String,
     pub email: String,
 }
+
 #[derive(Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "users"]
 pub struct NewUser<'a> {
