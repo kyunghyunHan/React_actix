@@ -47,5 +47,5 @@ pub async fn tweet_create() -> impl Responder {
         email: "Hello in Rust".to_string(),
     };
     let _post = create_post(&connection, &obj.first_name, &obj.last_name, &obj.email);
-    HttpResponse::Ok().body("Tweet#new")
+    HttpResponse::Ok().json(obj)
 }
