@@ -22,7 +22,7 @@ function App() {
     };
 
     const json = JSON.stringify(body);
-
+   console.log(json)
     await axios
       .post("http://localhost:8000/write_post", json)
       .then((res) => console.log(res))
@@ -49,7 +49,7 @@ function App() {
   //read
   const read = async () => {
     await axios
-      .get("http://localhost:8000/read", {})
+      .post("http://localhost:8000/read2", {dd:"22"})
       .then((res) => {
         console.log(res.data);
         setData(res.data);
@@ -58,10 +58,10 @@ function App() {
         console.log(err);
       });
   };
-  //update
+  
   const update = async () => {
     await axios
-      .post("http://localhost:8000/echo", {})
+      .post("http://localhost:8000/echo", "2")
       .then((res) => {
         console.log(res.data);
       })
