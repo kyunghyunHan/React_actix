@@ -1,6 +1,5 @@
 use crate::db::{self};
 use db::schema::users;
-use diesel::prelude::*;
 use diesel::query_dsl::RunQueryDsl;
 use diesel::MysqlConnection;
 use serde::{Deserialize, Serialize};

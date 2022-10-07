@@ -1,6 +1,6 @@
 use crate::db::user::get_all;
 use crate::db::{connection::establish_connection, user::create_post};
-use actix_web::{get, post, web, Error, HttpResponse, Result};
+use actix_web::{web, HttpResponse};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -20,7 +20,7 @@ pub async fn write_data(info: web::Json<Info>) -> HttpResponse {
     HttpResponse::Ok().body(info.first_name.to_string())
 }
 //get
-pub async fn get_user() -> HttpResponse {
+pub async fn get_data() -> HttpResponse {
     let connection = establish_connection();
     let _post = get_all(&connection);
     HttpResponse::Ok().json(_post)
