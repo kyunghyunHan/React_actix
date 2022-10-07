@@ -30,8 +30,10 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::JsonConfig::default().limit(4096))
             .app_data(data.clone())
             .wrap(middleware::Logger::default())
-            .route("/join", web::post().to(routes::user::write_data))
-            .route("/get", web::get().to(routes::user::get_data))
+            .route("/crate", web::post().to(routes::user::write_data))
+            .route("/read", web::get().to(routes::user::get_data))
+        // .route("/update", web::get().to(routes::user::get_data))
+        // .route("/delete", web::get().to(routes::user::get_data))
     })
     .bind("127.0.0.1:8000")?
     .run()
