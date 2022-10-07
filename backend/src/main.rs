@@ -31,6 +31,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(data.clone())
             .wrap(middleware::Logger::default())
             .route("/join", web::post().to(routes::user::write_data))
+            .route("/get", web::get().to(routes::user::get_user))
     })
     .bind("127.0.0.1:8000")?
     .run()

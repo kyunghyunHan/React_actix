@@ -1,9 +1,10 @@
 use crate::db::{self};
-
 use db::schema::users;
 use diesel::prelude::*;
+use diesel::query_dsl::RunQueryDsl;
+use diesel::MysqlConnection;
 use serde::{Deserialize, Serialize};
-#[derive(Serialize, Deserialize, AsChangeset)]
+#[derive(Serialize, Deserialize, AsChangeset, Queryable)]
 #[table_name = "users"]
 pub struct User {
     pub id: i32,
@@ -37,4 +38,8 @@ pub fn create_post<'a>(
         .execute(&*conn)
         .unwrap();
     format!("hey")
+}
+pub fn get_all(conn: &MysqlConnection) -> Vec<User> {
+    use crate::db::schema::users::dsl::users;
+    users.load::<User>(conn).expect("Error loading posts")
 }

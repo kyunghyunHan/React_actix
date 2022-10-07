@@ -23,7 +23,7 @@ function App() {
 
 
     await axios
-      .post("http://localhost:8000/write_post",body2)
+      .post("http://localhost:8000/join",body2)
       .then((res) => console.log(res))
       .catch((err) => {
         console.log(err);
@@ -57,7 +57,7 @@ function App() {
   console.log(json)
   const read = async () => {
     await axios
-      .post("http://localhost:8000/tweets",body2)
+      .get("http://localhost:8000/get")
       .then((res) => {
         console.log(res.data);
       })

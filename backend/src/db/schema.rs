@@ -2,9 +2,9 @@
 
 diesel::table! {
     users (id) {
-        id -> Unsigned<Bigint>,
-        first_name -> Text,
-        last_name -> Text,
-        email -> Text,
+        id -> Integer,
+        first_name -> Varchar,
+        last_name -> Varchar,
+        email -> Varchar,
     }
 }
