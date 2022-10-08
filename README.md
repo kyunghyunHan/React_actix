@@ -9,3 +9,4 @@ JSON 형식 의 응답 유형입니다. 핸들러는 JSON으로 직렬화할 구
 ## .serde::Deserialize
 
 JsonConfig추출 옵션을 구성하는 데 사용 합니다.
+ㅊ
