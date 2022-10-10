@@ -19,7 +19,7 @@ function App() {
         last_name: "1",
         email: "2",
      
-    };
+    };  
     await axios
       .post("http://localhost:8000/crate",body2)
       .then((res) => console.log(res))
