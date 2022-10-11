@@ -25,7 +25,15 @@ pub struct NewUser<'a> {
     pub user_address: &'a str,
     pub user_email: &'a str,
 }
-
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Info {
+    pub user_id: String,
+    pub user_password: String,
+    pub user_name: String,
+    pub user_birth: String,
+    pub user_address: String,
+    pub user_email: String,
+}
 #[derive(Debug, Deserialize)]
 pub struct LoginUser {
     pub user_id: String,

@@ -2,23 +2,14 @@
 use crate::db::{
     connection::establish_connection,
     user::create_post,
-    user::{LoginUser, User},
+    user::{Info, LoginUser, NewUser, User},
 };
 use crate::diesel::ExpressionMethods;
 use crate::diesel::QueryDsl;
 use crate::diesel::RunQueryDsl;
 use actix_web::Responder;
 use actix_web::{web, HttpResponse};
-use serde::{Deserialize, Serialize};
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Info {
-    user_id: String,
-    user_password: String,
-    user_name: String,
-    user_birth: String,
-    user_address: String,
-    user_email: String,
-}
+
 // #[derive(Debug, Deserialize)]
 // pub struct LoginUser {
 //     pub user_id: String,
