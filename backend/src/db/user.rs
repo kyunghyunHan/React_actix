@@ -26,6 +26,11 @@ pub struct NewUser<'a> {
     pub user_email: &'a str,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct LoginUser {
+    pub user_id: String,
+    pub user_password: String,
+}
 pub fn create_post<'a>(
     conn: &MysqlConnection,
     user_id: &'a str,
@@ -50,7 +55,7 @@ pub fn create_post<'a>(
         .unwrap();
     format!("hey")
 }
-pub fn get_all(conn: &MysqlConnection) -> Vec<User> {
-    use crate::db::schema::users::dsl::users;
-    users.load::<User>(conn).expect("Error loading posts")
-}
+// pub fn get_all(conn: &MysqlConnection) -> Vec<User> {
+//     use crate::db::schema::users::dsl::users;
+//     users.load::<User>(conn).expect("Error loading posts")
+// }

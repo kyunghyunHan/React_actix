@@ -31,8 +31,8 @@ async fn main() -> std::io::Result<()> {
             .app_data(data.clone())
             .wrap(middleware::Logger::default())
             .route("/crate", web::post().to(routes::user::write_data))
-            .route("/read", web::get().to(routes::user::get_data))
-        // .route("/update", web::get().to(routes::user::get_data))
+            // .route("/read", web::get().to(routes::user::get_data))
+            .route("/login", web::post().to(routes::user::process_login))
         // .route("/delete", web::get().to(routes::user::get_data))
     })
     .bind("127.0.0.1:8000")?

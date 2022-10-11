@@ -1,8 +1,15 @@
-use crate::db::user::get_all;
-use crate::db::{connection::establish_connection, user::create_post};
+// use crate::db::user::get_all;
+use crate::db::{
+    connection::establish_connection,
+    user::create_post,
+    user::{LoginUser, User},
+};
+use crate::diesel::ExpressionMethods;
+use crate::diesel::QueryDsl;
+use crate::diesel::RunQueryDsl;
+use actix_web::Responder;
 use actix_web::{web, HttpResponse};
 use serde::{Deserialize, Serialize};
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Info {
     user_id: String,
@@ -12,11 +19,11 @@ pub struct Info {
     user_address: String,
     user_email: String,
 }
-#[derive(Debug, Deserialize)]
-pub struct LoginUser {
-    pub user_id: String,
-    pub user_password: String,
-}
+// #[derive(Debug, Deserialize)]
+// pub struct LoginUser {
+//     pub user_id: String,
+//     pub user_password: String,
+// }
 //joins
 pub async fn write_data(info: web::Json<Info>) -> HttpResponse {
     let connection = establish_connection();
@@ -38,55 +45,32 @@ pub async fn write_data(info: web::Json<Info>) -> HttpResponse {
     HttpResponse::Ok().body(info.user_id.to_string())
 }
 //get
-pub async fn get_data() -> HttpResponse {
+// pub async fn get_data() -> HttpResponse {
+//     let connection = establish_connection();
+//     let _post = get_all(&connection);
+//     HttpResponse::Ok().json(_post)
+// }
+
+pub async fn process_login(data: web::Json<LoginUser>) -> impl Responder {
+    use crate::db::schema::users::dsl::{user_id, users};
+
     let connection = establish_connection();
-    let _post = get_all(&connection);
-    HttpResponse::Ok().json(_post)
+    let user = users
+        .filter(user_id.eq(&data.user_id))
+        .first::<User>(&connection);
+
+    match user {
+        Ok(u) => {
+            if u.user_password == data.user_password {
+                println!("{:?}", data);
+                HttpResponse::Ok().body(format!("Logged in: {}", data.user_id))
+            } else {
+                HttpResponse::Ok().body("Password is incorrect.")
+            }
+        }
+        Err(e) => {
+            println!("{:?}", e);
+            HttpResponse::Ok().body("User doesn't exist.")
+        }
+    }
 }
-// pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Responder {
-//     use crate::db::schema::users::dsl::users;
-
-//     let connection = establish_connection();
-//     let user = users
-//         .filter(username.eq(&data.username))
-//         .first::<User>(&connection);
-
-//     match user {
-//         Ok(u) => {
-//             if u.password == data.password {
-//                 let session_token = String::from(u.username);
-//                 id.remember(session_token);
-//                 HttpResponse::Ok().body(format!("Logged in: {}", data.username))
-//             } else {
-//                 HttpResponse::Ok().body("Password is incorrect.")
-//             }
-//         }
-//         Err(e) => {
-//             println!("{:?}", e);
-//             HttpResponse::Ok().body("User doesn't exist.")
-//         }
-//     }
-// }
-// pub async fn process_login(data: web::Form<LoginUser>) -> impl Responder {
-//     use crate::db::schema::users::dsl::users;
-
-//     let connection = establish_connection();
-//     let user = users
-//         .filter(username.eq(&data.username))
-//         .first::<User>(&connection);
-
-//     match user {
-//         Ok(u) => {
-//             if u.password == data.password {
-//                 println!("{:?}", data);
-//                 HttpResponse::Ok().body(format!("Logged in: {}", data.username))
-//             } else {
-//                 HttpResponse::Ok().body("Password is incorrect.")
-//             }
-//         }
-//         Err(e) => {
-//             println!("{:?}", e);
-//             HttpResponse::Ok().body("User doesn't exist.")
-//         }
-//     }
-// }

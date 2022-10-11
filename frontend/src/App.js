@@ -37,10 +37,16 @@ function App() {
   });
  }
   };
-//read
+  let body3 = {
+    user_id: "123",
+    user_password: "123",
+
+
+   
+  };  
   const read = async () => {
     await axios
-      .get("http://localhost:8000/read")
+      .post("http://localhost:8000/login",body3)
       .then((res) => {
         console.log(res.data);
       })
