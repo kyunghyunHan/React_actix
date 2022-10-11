@@ -4,21 +4,26 @@ import axios from "axios";
 
 function App() {
   const [userName, setUserName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [Id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
   const [emails, setEmails] = useState("");
+  const [birth,setBirth]=useState("");
 
-console.log(userName)
-console.log(lastName)
-console.log(emails)
+
 
   //create
   const submitHandler = async (e) => {
     e.preventDefault();
 
     let body2 = [{
-      first_name: userName,
-        last_name: lastName,
-        email: emails,
+      user_id: Id,
+      user_password: password,
+      user_name: userName,
+      user_birth: birth,
+      user_address: address,
+      user_email: emails,
+
      
     }];  
     
@@ -81,10 +86,12 @@ console.log(emails)
   return (
     <div className="App">
       <form onSubmit={submitHandler}>
-        이름 : <input type="text" value={userName} onChange={(e)=>{setUserName(e.target.value)}} />
-        <input type="text" value={lastName} onChange={(e)=>{setLastName(e.target.value)}} />
-        <input type="text" value={emails} onChange={(e)=>{setEmails(e.target.value)}} />
-        
+        이름 : <input type="text" value={Id} onChange={(e)=>{setId(e.target.value)}} />
+        이름 :  <input type="text" value={password} onChange={(e)=>{setPassword(e.target.value)}} />
+        이름 :   <input type="text" value={userName} onChange={(e)=>{setUserName(e.target.value)}} />
+        이름 :  <input type="text" value={birth} onChange={(e)=>{setBirth(e.target.value)}} />
+        이름 :  <input type="text" value={address} onChange={(e)=>{setAddress(e.target.value)}} />
+        이름 :  <input type="text" value={emails} onChange={(e)=>{setEmails(e.target.value)}} />
         <button type="submit">전송(create)</button>
       </form>
       <button onClick={read}>read</button>

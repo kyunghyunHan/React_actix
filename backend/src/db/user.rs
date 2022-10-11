@@ -7,29 +7,41 @@ use serde::{Deserialize, Serialize};
 #[table_name = "users"]
 pub struct User {
     pub id: i32,
-    pub first_name: String,
-    pub last_name: String,
-    pub email: String,
+    pub user_id: String,
+    pub user_password: String,
+    pub user_name: String,
+    pub user_birth: String,
+    pub user_address: String,
+    pub user_email: String,
 }
 
 #[derive(Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "users"]
 pub struct NewUser<'a> {
-    pub first_name: &'a str,
-    pub last_name: &'a str,
-    pub email: &'a str,
+    pub user_id: &'a str,
+    pub user_password: &'a str,
+    pub user_name: &'a str,
+    pub user_birth: &'a str,
+    pub user_address: &'a str,
+    pub user_email: &'a str,
 }
 
 pub fn create_post<'a>(
     conn: &MysqlConnection,
-    first_name: &'a str,
-    last_name: &'a str,
-    email: &'a str,
+    user_id: &'a str,
+    user_password: &'a str,
+    user_name: &'a str,
+    user_birth: &'a str,
+    user_address: &'a str,
+    user_email: &'a str,
 ) -> String {
     let new_post = NewUser {
-        first_name,
-        last_name,
-        email,
+        user_id,
+        user_password,
+        user_name,
+        user_birth,
+        user_address,
+        user_email,
     };
 
     diesel::insert_into(users::table)
