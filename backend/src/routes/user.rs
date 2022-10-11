@@ -67,3 +67,26 @@ pub async fn get_data() -> HttpResponse {
 //         }
 //     }
 // }
+// pub async fn process_login(data: web::Form<LoginUser>) -> impl Responder {
+//     use crate::db::schema::users::dsl::users;
+
+//     let connection = establish_connection();
+//     let user = users
+//         .filter(username.eq(&data.username))
+//         .first::<User>(&connection);
+
+//     match user {
+//         Ok(u) => {
+//             if u.password == data.password {
+//                 println!("{:?}", data);
+//                 HttpResponse::Ok().body(format!("Logged in: {}", data.username))
+//             } else {
+//                 HttpResponse::Ok().body("Password is incorrect.")
+//             }
+//         }
+//         Err(e) => {
+//             println!("{:?}", e);
+//             HttpResponse::Ok().body("User doesn't exist.")
+//         }
+//     }
+// }

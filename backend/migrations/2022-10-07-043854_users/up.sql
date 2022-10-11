@@ -6,4 +6,8 @@ CREATE TABLE users (
   user_name VARCHAR(60) NOT NULL,
     user_birth VARCHAR(60) NOT NULL,
       user_address VARCHAR(60) NOT NULL,
-        user_email VARCHAR(60) NOT NULL)
+        user_email VARCHAR(60) NOT NULL,
+        
+         UNIQUE(user_id),
+    UNIQUE(user_email)
+        )
