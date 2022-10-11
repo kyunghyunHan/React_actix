@@ -4,28 +4,33 @@ import axios from "axios";
 
 function App() {
   const [userName, setUserName] = useState("");
-  const [Data, setData] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [emails, setEmails] = useState("");
 
-  const nameHandler = (e) => {
-    e.preventDefault();
-    setUserName(e.target.value);
-  };
+console.log(userName)
+console.log(lastName)
+console.log(emails)
+
   //create
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    let body2 = {
+    let body2 = [{
       first_name: userName,
-        last_name: "1",
-        email: "2",
+        last_name: lastName,
+        email: emails,
      
-    };  
-    await axios
-      .post("http://localhost:8000/crate",body2)
-      .then((res) => console.log(res))
-      .catch((err) => {
-        console.log(err);
-      });
+    }];  
+    
+   
+ for (let i =0;i<body2.length;i++){
+  await axios
+  .post("http://localhost:8000/crate",body2[i])
+  .then((res) => console.log(res))
+  .catch((err) => {
+    console.log(err);
+  });
+ }
   };
 //read
   const read = async () => {
@@ -76,14 +81,17 @@ function App() {
   return (
     <div className="App">
       <form onSubmit={submitHandler}>
-        이름 : <input type="text" value={userName} onChange={nameHandler} />
+        이름 : <input type="text" value={userName} onChange={(e)=>{setUserName(e.target.value)}} />
+        <input type="text" value={lastName} onChange={(e)=>{setLastName(e.target.value)}} />
+        <input type="text" value={emails} onChange={(e)=>{setEmails(e.target.value)}} />
+        
         <button type="submit">전송(create)</button>
       </form>
       <button onClick={read}>read</button>
       <button onClick={update}>update</button>
       <button onClick={delete_test}>delete</button>
       
-      <div>read:{Data[0]}</div>
+  
     </div>
   );
 }
