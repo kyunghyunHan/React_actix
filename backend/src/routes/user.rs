@@ -44,9 +44,11 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
     match user {
         Ok(u) => {
             if u.user_pw == data.user_pw {
+                println!("ㅅㅂ2{:?}", data);
                 let session_token = String::from(u.user_id);
+                println!("ㅅㅂ{:?}", session_token);
                 id.remember(session_token);
-                HttpResponse::Ok().body(format!("Logged in: {}", data.user_id))
+                HttpResponse::Ok().body(format!(" {}", data.user_id))
             } else {
                 HttpResponse::Ok().body("Password is incorrect.")
             }
@@ -56,4 +58,9 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
             HttpResponse::Ok().body("User doesn't exist.")
         }
     }
+}
+
+pub async fn logout(id: Identity) -> impl Responder {
+    id.forget();
+    HttpResponse::Ok().body("Logged out.")
 }
