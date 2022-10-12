@@ -1,7 +1,9 @@
 use crate::db::{self};
+use argonautica::Hasher;
 use db::schema::users;
 use diesel::query_dsl::RunQueryDsl;
 use diesel::MysqlConnection;
+use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, AsChangeset, Queryable)]
 #[table_name = "users"]
@@ -40,11 +42,21 @@ pub fn create_post<'a>(
     user_name: &'a str,
     user_phone: &'a str,
 ) -> String {
+    dotenv().ok();
+
+    let secret = std::env::var("SECRET_KEY").expect("SECRET_KEY must be set");
+
+    let hash = Hasher::default()
+        .with_password(user_pw)
+        .with_secret_key(secret)
+        .hash()
+        .unwrap();
+
     let new_post = NewUser {
-        user_id,
-        user_pw,
-        user_name,
-        user_phone,
+        user_id: user_id,
+        user_pw: &hash,
+        user_name: user_name,
+        user_phone: user_phone,
     };
 
     diesel::insert_into(users::table)

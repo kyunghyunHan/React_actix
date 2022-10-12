@@ -122,10 +122,10 @@ function App() {
 			<input type="submit"></input>
 		</form>
       <form onSubmit={submitHandler}>
-        이름 : <input type="text" value={Id} onChange={(e)=>{setId(e.target.value)}} />
-        이름 :  <input type="text" value={password} onChange={(e)=>{setPassword(e.target.value)}} />
+        아이디 : <input type="text" value={Id} onChange={(e)=>{setId(e.target.value)}} />
+        비번 :  <input type="text" value={password} onChange={(e)=>{setPassword(e.target.value)}} />
         이름 :   <input type="text" value={userName} onChange={(e)=>{setUserName(e.target.value)}} />
-        이름 :  <input type="text" value={birth} onChange={(e)=>{setBirth(e.target.value)}} />
+        전화번호:  <input type="text" value={birth} onChange={(e)=>{setBirth(e.target.value)}} />
     
         <button type="submit">전송(create)</button>
       </form>
