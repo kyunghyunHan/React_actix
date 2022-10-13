@@ -14,10 +14,9 @@ use crate::diesel::RunQueryDsl;
 use actix_web::Responder;
 use actix_web::{web, HttpResponse};
 
-// #[derive(Debug, Deserialize)]
-// pub struct LoginUser {
-//     pub user_id: String,
-//     pub user_password: String,
+// #[derive(Debug)]
+// pub struct Test {
+//     pub message: String,
 // }
 //joins
 pub async fn write_data(info: web::Json<Info>) -> HttpResponse {
@@ -27,7 +26,7 @@ pub async fn write_data(info: web::Json<Info>) -> HttpResponse {
     let user_name = &info.user_name.to_string();
     let user_phone = &&info.user_phone.to_string();
     let _post = create_post(&connection, user_id, user_pw, user_name, user_phone);
-    HttpResponse::Ok().body(info.user_id.to_string())
+    HttpResponse::Ok().body("가입완료")
 }
 //get
 // pub async fn get_data() -> HttpResponse {
@@ -63,10 +62,11 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
             // } else {
             //     HttpResponse::Ok().body("Password is incorrect.")
             // }
+            let _post = {};
             if valid {
                 let session_token = String::from(u.user_id);
                 id.remember(session_token);
-                HttpResponse::Ok().body(format!("{}", data.user_id))
+                HttpResponse::Ok().json(_post)
             } else {
                 HttpResponse::Ok().body("Password is incorrect.")
             }
