@@ -9,5 +9,6 @@ pub struct Resume {
     pub Cv_Edu: String,
     pub Cv_Cert: String,
     pub CV_Awards: String,
+    pub CV_Project: String,
     pub created_at: chrono::NaiveDateTime,
 }
