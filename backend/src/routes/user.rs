@@ -13,11 +13,11 @@ use crate::diesel::QueryDsl;
 use crate::diesel::RunQueryDsl;
 use actix_web::Responder;
 use actix_web::{web, HttpResponse};
-
-// #[derive(Debug)]
-// pub struct Test {
-//     pub message: String,
-// }
+use serde_derive::Serialize;
+#[derive(Serialize)]
+pub struct Test {
+    pub message: String,
+}
 //joins
 pub async fn write_data(info: web::Json<Info>) -> HttpResponse {
     let connection = establish_connection();
@@ -66,14 +66,38 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
             if valid {
                 let session_token = String::from(u.user_id);
                 id.remember(session_token);
-                HttpResponse::Ok().json(_post)
+                // let mut vec: Vec<Test> = Vec::new();
+
+                // vec.push(Test {
+                //     message: "로그인성공".to_string(),
+                // });
+
+                web::Json(Test {
+                    message: "로그인성공".to_string(),
+                })
             } else {
-                HttpResponse::Ok().body("Password is incorrect.")
+                // let mut vec: Vec<Test> = Vec::new();
+
+                // vec.push(Test {
+                //     message: "ID".to_string(),
+                // });
+
+                web::Json(Test {
+                    message: "로그인성공".to_string(),
+                })
             }
         }
         Err(e) => {
             println!("{:?}", e);
-            HttpResponse::Ok().body("User doesn't exist.")
+            // let mut vec: Vec<Test> = Vec::new();
+
+            // vec.push(Test {
+            //     message: "ID".to_string(),
+            // });
+
+            web::Json(Test {
+                message: "로그인성공".to_string(),
+            })
         }
     }
 }
