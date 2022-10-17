@@ -41,47 +41,23 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
     let user = users
         .filter(user_id.eq(&data.user_id))
         .first::<User>(&connection);
-
     match user {
         Ok(u) => {
             dotenv().ok();
             let secret = std::env::var("SECRET_KEY").expect("SECRET_KEY must be set");
-
             let valid = Verifier::default()
                 .with_hash(u.user_pw)
                 .with_password(data.user_pw.clone())
                 .with_secret_key(secret)
                 .verify()
                 .unwrap();
-            // if u.user_pw == data.user_pw {
-            //     println!("ㅅㅂ2{:?}", data);
-            //     let session_token = String::from(u.user_id);
-            //     println!("ㅅㅂ{:?}", session_token);
-            //     id.remember(session_token);
-            //     HttpResponse::Ok().body(format!(" {}", data.user_id))
-            // } else {
-            //     HttpResponse::Ok().body("Password is incorrect.")
-            // }
-            let _post = {};
             if valid {
                 let session_token = String::from(u.user_id);
                 id.remember(session_token);
-                // let mut vec: Vec<Test> = Vec::new();
-
-                // vec.push(Test {
-                //     message: "로그인성공".to_string(),
-                // });
-
                 web::Json(Test {
                     message: "로그인성공".to_string(),
                 })
             } else {
-                // let mut vec: Vec<Test> = Vec::new();
-
-                // vec.push(Test {
-                //     message: "ID".to_string(),
-                // });
-
                 web::Json(Test {
                     message: "로그인성공".to_string(),
                 })
@@ -89,11 +65,6 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
         }
         Err(e) => {
             println!("{:?}", e);
-            // let mut vec: Vec<Test> = Vec::new();
-
-            // vec.push(Test {
-            //     message: "ID".to_string(),
-            // });
 
             web::Json(Test {
                 message: "로그인성공".to_string(),
@@ -106,4 +77,3 @@ pub async fn logout(id: Identity) -> impl Responder {
     id.forget();
     HttpResponse::Ok().body("Logged out.")
 }
-//ㅇㅂㄹㅂ
