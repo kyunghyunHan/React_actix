@@ -4,21 +4,35 @@ use crate::db::{
     user::create_user,
     user::{Info, LoginUser, User},
 };
+
 use actix_identity::Identity;
 use argonautica::Verifier;
+use bcrypt::{hash, verify};
+use chrono::{Duration, Utc};
 use dotenv::dotenv;
 
 use crate::diesel::ExpressionMethods;
 use crate::diesel::QueryDsl;
 use crate::diesel::RunQueryDsl;
 use actix_web::Responder;
-use actix_web::{web, HttpResponse};
-use serde_derive::Serialize;
+use actix_web::{web, Error, HttpResponse, ResponseError};
+use jsonwebtoken::{encode, EncodingKey, Header};
+use serde_derive::{Deserialize, Serialize};
+
+// const JWT_SECRET: &str = "secret";
+// const JWT_COOKIE_KEY: &str = "jwt";
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Klaim {
+    pub sub: String,
+    pub iat: i64,
+    pub exp: i64,
+}
+
 #[derive(Serialize)]
 pub struct Test {
     pub message: String,
 }
-//joins
+
 pub async fn write_data(info: web::Json<Info>) -> HttpResponse {
     let connection = establish_connection();
     let user_id = &info.user_id.to_string();
@@ -34,7 +48,7 @@ pub async fn write_data(info: web::Json<Info>) -> HttpResponse {
 //     let _post = get_all(&connection);
 //     HttpResponse::Ok().json(_post)
 // }
-pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Responder {
+pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> HttpResponse {
     use crate::db::schema::users::dsl::{user_id, users};
 
     let connection = establish_connection();
@@ -52,23 +66,30 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
                 .verify()
                 .unwrap();
             if valid {
-                let session_token = String::from(u.user_id);
-                id.remember(session_token);
-                web::Json(Test {
-                    message: "로그인성공".to_string(),
-                })
+                let secret = std::env::var("APP_SECRET").expect("SECRET_KEY must be set");
+                let iat = Utc::now();
+                let exp = iat + Duration::days(7);
+                let klaim = Klaim {
+                    sub: u.user_id,
+                    iat: iat.timestamp_nanos(),
+                    exp: exp.timestamp_nanos(),
+                };
+                let token = encode(
+                    &Header::default(),
+                    &klaim,
+                    &EncodingKey::from_secret(secret.as_bytes()),
+                )
+                .unwrap();
+                println!("{}", token);
+                HttpResponse::Ok().body(token)
             } else {
-                web::Json(Test {
-                    message: "로그인성공".to_string(),
-                })
+                HttpResponse::Ok().body("s")
             }
         }
         Err(e) => {
             println!("{:?}", e);
 
-            web::Json(Test {
-                message: "로그인성공".to_string(),
-            })
+            HttpResponse::Ok().body("s")
         }
     }
 }

@@ -1,4 +1,6 @@
 use crate::db::{self};
+use actix_web::Responder;
+use actix_web::{web, HttpResponse};
 use argonautica::Hasher;
 use db::schema::users;
 use diesel::query_dsl::RunQueryDsl;

@@ -25,7 +25,7 @@ function App() {
 			})
 			.then((res) => {
         console.log(res.data)
-					setCookie('id', res.data);// 쿠키에 토큰 저장
+					// setCookie('id', res.data);// 쿠키에 토큰 저장
 			});
 	};
   //create
@@ -43,7 +43,7 @@ function App() {
    
  for (let i =0;i<body2.length;i++){
   await axios
-  .post("http://localhost:8000/signup",body2[i])
+  .post("http://localhost:8000/signUp",body2[i])
   .then((res) => console.log(res))
   .catch((err) => {
     console.log(err);
