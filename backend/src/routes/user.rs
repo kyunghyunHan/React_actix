@@ -106,6 +106,8 @@ pub async fn logout(id: Identity) -> impl Responder {
     id.forget();
     HttpResponse::Ok().body("Logged out.")
 }
+//로그인 정보 맞으면
+//유저의 키를 받아서
 pub async fn ee(data: web::Json<GetUser>) -> impl Responder {
     dotenv().ok();
     let secret = std::env::var("APP_SECRET").expect("SECRET_KEY must be set");
@@ -117,8 +119,9 @@ pub async fn ee(data: web::Json<GetUser>) -> impl Responder {
     )
     .unwrap();
     println!("{:?}", token);
-    web::Json(Test {
-        message: "정보틀림".to_string(),
-        token: "-".to_string(),
+    web::Json(Claims {
+        sub: token.claims.sub,
+        iat: token.claims.iat,
+        exp: token.claims.exp,
     })
 }
