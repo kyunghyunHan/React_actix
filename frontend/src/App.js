@@ -85,16 +85,13 @@ function App() {
         console.log(err);
       });
   };
-
+  let body3422 = {
+    user_id:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoa2gzMDQ1IiwiaWF0IjoxNjY1OTk0MDUzMjI4ODI5MDAwLCJleHAiOjE2NjY1OTg4NTMyMjg4MjkwMDB9.qMha9uH9NLAPfn35M-Avq7BJi-PVAmDIkNSTKQmSYg8",
+  }; 
     //delete
     const delete_test = async () => {
       await axios
-        .delete("http://localhost:8000/delete/4", {
-          name: userName,
-          identity: "1",
-          hometown: "2",
-          age: 29,
-        })
+        .get("http://localhost:8000/user/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoa2gzMDQ1IiwiaWF0IjoxNjY1OTk0MDUzMjI4ODI5MDAwLCJleHAiOjE2NjY1OTg4NTMyMjg4MjkwMDB9.qMha9uH9NLAPfn35M-Avq7BJi-PVAmDIkNSTKQmSYg8")
         .then((res) => {
           console.log(res.data);
         })

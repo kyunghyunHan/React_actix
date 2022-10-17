@@ -1,8 +1,11 @@
 use crate::db::{self};
+use crate::diesel::ExpressionMethods;
+use crate::diesel::QueryDsl;
 use actix_web::Responder;
 use actix_web::{web, HttpResponse};
 use argonautica::Hasher;
 use db::schema::users;
+use diesel::prelude::*;
 use diesel::query_dsl::RunQueryDsl;
 use diesel::MysqlConnection;
 use dotenv::dotenv;
@@ -36,6 +39,10 @@ pub struct Info {
 pub struct LoginUser {
     pub user_id: String,
     pub user_pw: String,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GetUser {
+    pub user_id: String,
 }
 pub fn create_user<'a>(
     conn: &MysqlConnection,
@@ -71,3 +78,15 @@ pub fn create_user<'a>(
 //     use crate::db::schema::users::dsl::users;
 //     users.load::<User>(conn).expect("Error loading posts")
 // }
+pub fn find_user_by_uid(
+    conn: &MysqlConnection,
+    data: web::Json<GetUser>,
+) -> Result<Option<User>, diesel::result::Error> {
+    use crate::db::schema::users::dsl::{user_id, users};
+    let user = users
+        .filter(user_id.eq(&data.user_id))
+        .first::<User>(&*conn)
+        .optional()?;
+
+    Ok(user)
+}
