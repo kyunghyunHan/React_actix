@@ -1,7 +1,7 @@
 // use crate::db::user::get_all;
 use crate::db::{
     connection::establish_connection,
-    user::create_post,
+    user::create_user,
     user::{Info, LoginUser, User},
 };
 use actix_identity::Identity;
@@ -25,7 +25,7 @@ pub async fn write_data(info: web::Json<Info>) -> HttpResponse {
     let user_pw = &info.user_pw.to_string();
     let user_name = &info.user_name.to_string();
     let user_phone = &&info.user_phone.to_string();
-    let _post = create_post(&connection, user_id, user_pw, user_name, user_phone);
+    let _post = create_user(&connection, user_id, user_pw, user_name, user_phone);
     HttpResponse::Ok().body("가입완료")
 }
 //get

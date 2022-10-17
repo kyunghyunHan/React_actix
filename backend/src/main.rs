@@ -33,7 +33,7 @@ async fn main() -> std::io::Result<()> {
             .route("/signUp", web::post().to(routes::user::write_data))
             .route("/logout", web::get().to(routes::user::logout))
             .route("/login", web::post().to(routes::user::process_login))
-        // .route("/delete", web::get().to(routes::user::get_data))
+            .route("/write_resume", web::get().to(routes::resume::write_resume))
     })
     .bind("127.0.0.1:8000")?
     .run()

@@ -1,14 +1,73 @@
 //이력서
+use crate::db::{self};
+
+use db::schema::resumes;
+use diesel::query_dsl::RunQueryDsl;
+use diesel::MysqlConnection;
+
+use serde::{Deserialize, Serialize};
 #[derive(Debug, Queryable)]
 pub struct Resume {
     pub id: i32,
-    pub Cv_address: String,
-    pub Cv_email: String,
-    pub Cv_letter: String,
-    pub Cv_tech: String,
-    pub Cv_Edu: String,
-    pub Cv_Cert: String,
-    pub CV_Awards: String,
-    pub CV_Project: String,
+    pub cv_address: String,
+    pub cv_email: String,
+    pub cv_letter: String,
+    pub cv_tech: String,
+    pub cv_edu: String,
+    pub cv_cert: String,
+    pub cv_awards: String,
+    pub cv_project: String,
     pub created_at: chrono::NaiveDateTime,
+}
+
+#[derive(Serialize, Deserialize, Queryable, Insertable)]
+#[table_name = "resumes"]
+pub struct NewResume<'a> {
+    pub cv_address: &'a str,
+    pub cv_email: &'a str,
+    pub cv_letter: &'a str,
+    pub cv_tech: &'a str,
+    pub cv_edu: &'a str,
+    pub cv_cert: &'a str,
+    pub cv_awards: &'a str,
+    pub cv_project: &'a str,
+}
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Resumes {
+    pub cv_address: String,
+    pub cv_email: String,
+    pub cv_letter: String,
+    pub cv_tech: String,
+    pub cv_edu: String,
+    pub cv_cert: String,
+    pub cv_awards: String,
+    pub cv_project: String,
+}
+pub fn create_resume<'a>(
+    conn: &MysqlConnection,
+    cv_address: &'a str,
+    cv_email: &'a str,
+    cv_letter: &'a str,
+    cv_tech: &'a str,
+    cv_edu: &'a str,
+    cv_cert: &'a str,
+    cv_awards: &'a str,
+    cv_project: &'a str,
+) -> String {
+    let new_post = NewResume {
+        cv_address: cv_address,
+        cv_email: cv_email,
+        cv_letter: cv_letter,
+        cv_tech: cv_tech,
+        cv_edu: cv_edu,
+        cv_cert: cv_cert,
+        cv_awards: cv_awards,
+        cv_project: cv_project,
+    };
+
+    diesel::insert_into(resumes::table)
+        .values(&new_post)
+        .execute(&*conn)
+        .unwrap();
+    format!("hey")
 }

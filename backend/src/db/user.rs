@@ -35,7 +35,7 @@ pub struct LoginUser {
     pub user_id: String,
     pub user_pw: String,
 }
-pub fn create_post<'a>(
+pub fn create_user<'a>(
     conn: &MysqlConnection,
     user_id: &'a str,
     user_pw: &'a str,
