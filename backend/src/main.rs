@@ -34,6 +34,7 @@ async fn main() -> std::io::Result<()> {
             .route("/logout", web::get().to(routes::user::logout))
             .route("/login", web::post().to(routes::user::process_login))
             .route("/write_resume", web::get().to(routes::resume::write_resume))
+            .route("/wwww", web::post().to(routes::user::ee))
     })
     .bind("127.0.0.1:8000")?
     .run()

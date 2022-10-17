@@ -3,7 +3,7 @@ use crate::db::{
     connection::establish_connection,
     user::create_user,
     // user::find_user_by_uid,
-    user::{Info, LoginUser, User},
+    user::{GetUser, Info, LoginUser, User},
 };
 use actix_identity::Identity;
 use argonautica::Verifier;
@@ -16,7 +16,7 @@ use crate::diesel::QueryDsl;
 use crate::diesel::RunQueryDsl;
 use actix_web::Responder;
 use actix_web::{web, HttpResponse};
-use jsonwebtoken::{encode, EncodingKey, Header};
+use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde_derive::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -86,7 +86,7 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
                 // HttpResponse::Ok().body(token)
             } else {
                 web::Json(Test {
-                    message: "유저가아님".to_string(),
+                    message: "비밀번호틀림".to_string(),
                     token: "-".to_string(),
                 })
             }
@@ -95,7 +95,7 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
             println!("{:?}", e);
 
             web::Json(Test {
-                message: "로그인성공".to_string(),
+                message: "정보틀림".to_string(),
                 token: "-".to_string(),
             })
         }
@@ -105,4 +105,20 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
 pub async fn logout(id: Identity) -> impl Responder {
     id.forget();
     HttpResponse::Ok().body("Logged out.")
+}
+pub async fn ee(data: web::Json<GetUser>) -> impl Responder {
+    dotenv().ok();
+    let secret = std::env::var("APP_SECRET").expect("SECRET_KEY must be set");
+
+    let token = decode::<Claims>(
+        &data.user_id,
+        &DecodingKey::from_secret(secret.as_bytes()),
+        &Validation::default(),
+    )
+    .unwrap();
+    println!("{:?}", token);
+    web::Json(Test {
+        message: "정보틀림".to_string(),
+        token: "-".to_string(),
+    })
 }

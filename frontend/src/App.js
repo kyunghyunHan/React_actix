@@ -86,12 +86,12 @@ function App() {
       });
   };
   let body3422 = {
-    user_id:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoa2gzMDQ1IiwiaWF0IjoxNjY1OTk0MDUzMjI4ODI5MDAwLCJleHAiOjE2NjY1OTg4NTMyMjg4MjkwMDB9.qMha9uH9NLAPfn35M-Avq7BJi-PVAmDIkNSTKQmSYg8",
+    user_id:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoa2gzMDQ1IiwiaWF0IjoxNjY1OTk3MDEwNjQ0MTM3MDAwLCJleHAiOjE2NjY2MDE4MTA2NDQxMzcwMDB9.J0bm47he4Hm0dBze7vt76TAOhO2F-FslSQA5at_lykU",
   }; 
     //delete
     const delete_test = async () => {
       await axios
-        .get("http://localhost:8000/user/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoa2gzMDQ1IiwiaWF0IjoxNjY1OTk0MDUzMjI4ODI5MDAwLCJleHAiOjE2NjY1OTg4NTMyMjg4MjkwMDB9.qMha9uH9NLAPfn35M-Avq7BJi-PVAmDIkNSTKQmSYg8")
+        .post("http://localhost:8000/wwww",body3422)
         .then((res) => {
           console.log(res.data);
         })
@@ -110,7 +110,7 @@ function App() {
       removeCookie('id'); // 쿠키를 삭제
       navigate('/'); // 메인 페이지로 이동
     };
-    const token = cookies.id;
+   
   return (
     <div className="App">
       <form ref={formRef} onSubmit={login}>
