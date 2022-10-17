@@ -78,15 +78,15 @@ pub fn create_user<'a>(
 //     use crate::db::schema::users::dsl::users;
 //     users.load::<User>(conn).expect("Error loading posts")
 // }
-pub fn find_user_by_uid(
-    conn: &MysqlConnection,
-    data: web::Json<GetUser>,
-) -> Result<Option<User>, diesel::result::Error> {
-    use crate::db::schema::users::dsl::{user_id, users};
-    let user = users
-        .filter(user_id.eq(&data.user_id))
-        .first::<User>(&*conn)
-        .optional()?;
+// pub fn find_user_by_uid(
+//     conn: &MysqlConnection,
+//     data: web::Json<GetUser>,
+// ) -> Result<Option<User>, diesel::result::Error> {
+//     use crate::db::schema::users::dsl::{user_id, users};
+//     let user = users
+//         .filter(user_id.eq(&data.user_id))
+//         .first::<User>(&*conn)
+//         .optional()?;
 
-    Ok(user)
-}
+//     Ok(user)
+// }
