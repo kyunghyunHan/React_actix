@@ -83,7 +83,7 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
                 )
                 .unwrap();
                 web::Json(Test {
-                    message: " 아님".to_string(),
+                    message: "로그인성공".to_string(),
                     token: token,
                 })
                 // HttpResponse::Ok().body(token)

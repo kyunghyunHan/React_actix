@@ -32,7 +32,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .route("/signUp", web::post().to(routes::user::write_data))
             .route("/logout", web::get().to(routes::user::logout))
-            // .route("/login", web::post().to(routes::user::process_login))
+            .route("/login", web::post().to(routes::user::process_login))
             .route("/write_resume", web::get().to(routes::resume::write_resume))
             .route("/user/{user_id}", web::get().to(routes::user::get_user))
     })
