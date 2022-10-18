@@ -1,11 +1,6 @@
 use crate::db::{self};
-use crate::diesel::ExpressionMethods;
-use crate::diesel::QueryDsl;
-use actix_web::Responder;
-use actix_web::{web, HttpResponse};
 use argonautica::Hasher;
 use db::schema::users;
-use diesel::prelude::*;
 use diesel::query_dsl::RunQueryDsl;
 use diesel::MysqlConnection;
 use dotenv::dotenv;
@@ -77,16 +72,4 @@ pub fn create_user<'a>(
 // pub fn get_all(conn: &MysqlConnection) -> Vec<User> {
 //     use crate::db::schema::users::dsl::users;
 //     users.load::<User>(conn).expect("Error loading posts")
-// }
-// pub fn find_user_by_uid(
-//     conn: &MysqlConnection,
-//     data: web::Json<GetUser>,
-// ) -> Result<Option<User>, diesel::result::Error> {
-//     use crate::db::schema::users::dsl::{user_id, users};
-//     let user = users
-//         .filter(user_id.eq(&data.user_id))
-//         .first::<User>(&*conn)
-//         .optional()?;
-
-//     Ok(user)
 // }

@@ -110,7 +110,29 @@ function App() {
       removeCookie('id'); // 쿠키를 삭제
       navigate('/'); // 메인 페이지로 이동
     };
-   
+
+
+    let resumeData = {
+      cv_address:"131",
+      cv_email:"131",
+      cv_letter:"131",
+      cv_tech:"131",
+      cv_edu:"131",
+      cv_cert:"131",
+      cv_awards:"131",
+      cv_project:"131",
+     
+    };
+    const resume = async () => {
+      await axios
+        .post("http://localhost:8000/write_resume",resumeData)
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
   return (
     <div className="App">
       <form ref={formRef} onSubmit={login}>
@@ -131,6 +153,7 @@ function App() {
       <button onClick={logOut}>로그아웃</button>
       <button onClick={logout}>logout</button>
       <button onClick={delete_test}>delete</button>
+      <button onClick={resume}>이력서전송</button>
       
   
     </div>

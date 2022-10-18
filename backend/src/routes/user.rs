@@ -1,8 +1,6 @@
-// use crate::db::user::get_all;
 use crate::db::{
     connection::establish_connection,
     user::create_user,
-    // user::find_user_by_uid,
     user::{GetUser, Info, LoginUser, User},
 };
 use actix_identity::Identity;
@@ -83,7 +81,6 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
                     message: "로그인성공".to_string(),
                     token: token,
                 })
-                // HttpResponse::Ok().body(token)
             } else {
                 web::Json(Test {
                     message: "비밀번호틀림".to_string(),

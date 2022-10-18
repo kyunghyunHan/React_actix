@@ -33,7 +33,10 @@ async fn main() -> std::io::Result<()> {
             .route("/signUp", web::post().to(routes::user::write_data))
             .route("/logout", web::get().to(routes::user::logout))
             .route("/login", web::post().to(routes::user::process_login))
-            .route("/write_resume", web::get().to(routes::resume::write_resume))
+            .route(
+                "/write_resume",
+                web::post().to(routes::resume::write_resume),
+            )
             .route("/wwww", web::post().to(routes::user::ee))
     })
     .bind("127.0.0.1:8000")?
@@ -42,4 +45,3 @@ async fn main() -> std::io::Result<()> {
     println!("🧑‍🔬 Sample Service Stopping");
     result
 }
-//main

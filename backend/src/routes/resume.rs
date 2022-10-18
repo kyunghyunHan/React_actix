@@ -29,7 +29,7 @@ pub async fn write_resume(info: web::Json<Resumes>) -> HttpResponse {
         cv_awards,
         cv_project,
     );
-    HttpResponse::Ok().body("가입완료")
+    HttpResponse::Ok().body("이력서 작성완료")
 }
 //get
 // pub async fn get_data() -> HttpResponse {
