@@ -39,6 +39,7 @@ pub struct LoginUser {
 pub struct GetUser {
     pub user_id: String,
 }
+//회원가입
 pub fn create_user<'a>(
     conn: &MysqlConnection,
     user_id: &'a str,

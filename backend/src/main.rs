@@ -38,6 +38,7 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(routes::resume::write_resume),
             )
             .route("/wwww", web::post().to(routes::user::ee))
+            .route("/write_tech", web::post().to(routes::tech::write_tech))
     })
     .bind("127.0.0.1:8000")?
     .run()
