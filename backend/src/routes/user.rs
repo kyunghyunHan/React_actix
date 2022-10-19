@@ -20,14 +20,23 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
     pub sub: String,
-    pub iat: i64,
+    pub nbf: i64,
     pub exp: i64,
 }
 
-#[derive(Serialize)]
-pub struct Test {
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Tokens {
+    pub user_id: String,
+    pub user_name: String,
     pub message: String,
-    pub token: String,
+    pub accessToken: String,
+    pub refreshToken: String,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GetTokens {
+    pub accesstoken: String,
+    pub refreshtoken: String,
+    pub user_id: String,
 }
 
 pub async fn write_data(info: web::Json<Info>) -> HttpResponse {
@@ -65,35 +74,54 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
             if valid {
                 let secret = std::env::var("APP_SECRET").expect("SECRET_KEY must be set");
                 let iat = Utc::now();
-                let exp = iat + Duration::days(7);
-                let klaim = Claims {
-                    sub: u.user_id,
-                    iat: iat.timestamp_nanos(),
-                    exp: exp.timestamp_nanos(),
+                let acc_exp = iat + Duration::days(7);
+                let ref_exp = iat + Duration::hours(1);
+                println!("dqdqdqd{}", Utc::now().timestamp_nanos());
+                let mut claim = Claims {
+                    // iss: u.user_id,
+                    sub: "Quest".to_string(),
+                    nbf: iat.timestamp_nanos(),
+                    exp: acc_exp.timestamp_nanos(),
                 };
-                let token = encode(
+                let access_token = encode(
                     &Header::default(),
-                    &klaim,
+                    &claim,
                     &EncodingKey::from_secret(secret.as_bytes()),
                 )
                 .unwrap();
-                web::Json(Test {
+                claim.exp = ref_exp.timestamp_nanos();
+                let refresh_token = encode(
+                    &Header::default(),
+                    &claim,
+                    &EncodingKey::from_secret(secret.as_bytes()),
+                )
+                .unwrap();
+                web::Json(Tokens {
+                    user_id: u.user_id,
                     message: "로그인성공".to_string(),
-                    token: token,
+                    user_name: u.user_name,
+                    accessToken: access_token,
+                    refreshToken: refresh_token,
                 })
             } else {
-                web::Json(Test {
+                web::Json(Tokens {
+                    user_id: "-".to_string(),
+                    user_name: "-".to_string(),
                     message: "비밀번호틀림".to_string(),
-                    token: "-".to_string(),
+                    accessToken: "-".to_string(),
+                    refreshToken: "".to_string(),
                 })
             }
         }
         Err(e) => {
             println!("{:?}", e);
 
-            web::Json(Test {
+            web::Json(Tokens {
+                user_id: "-".to_string(),
+                user_name: "-".to_string(),
                 message: "정보틀림".to_string(),
-                token: "-".to_string(),
+                accessToken: "-".to_string(),
+                refreshToken: "".to_string(),
             })
         }
     }
@@ -103,22 +131,85 @@ pub async fn logout(id: Identity) -> impl Responder {
     id.forget();
     HttpResponse::Ok().body("Logged out.")
 }
-//로그인 정보 맞으면
-//유저의 키를 받아서
-pub async fn ee(data: web::Json<GetUser>) -> impl Responder {
+
+//체크 토큰
+pub async fn check_token(data: web::Json<GetTokens>) -> impl Responder {
     dotenv().ok();
     let secret = std::env::var("APP_SECRET").expect("SECRET_KEY must be set");
-
-    let token = decode::<Claims>(
-        &data.user_id,
+    let ref_token = decode::<Claims>(
+        &data.refreshtoken,
         &DecodingKey::from_secret(secret.as_bytes()),
         &Validation::default(),
     )
     .unwrap();
-    println!("{:?}", token);
-    web::Json(Claims {
-        sub: token.claims.sub,
-        iat: token.claims.iat,
-        exp: token.claims.exp,
-    })
+    let acc_token = decode::<Claims>(
+        &data.accesstoken,
+        &DecodingKey::from_secret(secret.as_bytes()),
+        &Validation::default(),
+    )
+    .unwrap();
+    let now_time = Utc::now().timestamp_nanos();
+    // .unwrap();
+    println!("{:?}", acc_token.claims.exp);
+    if ref_token.claims.exp > now_time {
+        if acc_token.claims.exp > now_time {
+            return web::Json(Tokens {
+                user_id: "-".to_string(),
+                user_name: "-".to_string(),
+                message: "accTokIsLogin".to_string(),
+                accessToken: "-".to_string(),
+                refreshToken: "".to_string(),
+            });
+        } else {
+            let secret = std::env::var("APP_SECRET").expect("SECRET_KEY must be set");
+            let iat = Utc::now();
+            let acc_exp = iat + Duration::days(7);
+            let claim = Claims {
+                // iss: u.user_id,
+                sub: "Quest".to_string(),
+                nbf: iat.timestamp_nanos(),
+                exp: acc_exp.timestamp_nanos(),
+            };
+            let access_token = encode(
+                &Header::default(),
+                &claim,
+                &EncodingKey::from_secret(secret.as_bytes()),
+            )
+            .unwrap();
+            return web::Json(Tokens {
+                user_id: "-".to_string(),
+                user_name: "-".to_string(),
+                message: "accTokCreateLogin".to_string(),
+                accessToken: access_token,
+                refreshToken: "".to_string(),
+            });
+        }
+    } else {
+        return web::Json(Tokens {
+            user_id: "-".to_string(),
+            user_name: "-".to_string(),
+            message: "tokenEnd".to_string(),
+            accessToken: "-".to_string(),
+            refreshToken: "".to_string(),
+        });
+    }
+}
+//아이디 중복확인
+pub async fn check_id(data: web::Json<GetUser>) -> impl Responder {
+    use crate::db::schema::users::dsl::{user_id, users};
+    let connection = establish_connection();
+
+    let user = users
+        .filter(user_id.eq(&data.user_id))
+        .first::<User>(&connection);
+    match user {
+        Ok(u) => {
+            if u.user_id == data.user_id {
+                HttpResponse::Ok().body("아이디가 있습니다")
+            } else {
+                HttpResponse::Ok().body("사용 가능한 아이디 입니다.")
+            }
+        }
+        Err(e) => HttpResponse::Ok().body("사용 가능한 아이디 입니다."),
+    }
 }

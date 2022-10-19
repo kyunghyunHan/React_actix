@@ -37,4 +37,8 @@ diesel::joinable!(resumes -> users (cv_user_key));
 diesel::joinable!(techs -> resumes (tc_resume_key));
 diesel::joinable!(techs -> users (tc_user_key));
 
-diesel::allow_tables_to_appear_in_same_query!(resumes, techs, users,);
+diesel::allow_tables_to_appear_in_same_query!(
+    resumes,
+    techs,
+    users,
+);
