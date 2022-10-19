@@ -29,8 +29,8 @@ pub struct Tokens {
     pub user_id: String,
     pub user_name: String,
     pub message: String,
-    pub accessToken: String,
-    pub refreshToken: String,
+    pub accesstoken: String,
+    pub refreshtoken: String,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetTokens {
@@ -76,7 +76,6 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
                 let iat = Utc::now();
                 let acc_exp = iat + Duration::days(7);
                 let ref_exp = iat + Duration::hours(1);
-                println!("dqdqdqd{}", Utc::now().timestamp_nanos());
                 let mut claim = Claims {
                     // iss: u.user_id,
                     sub: "Quest".to_string(),
@@ -100,16 +99,16 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
                     user_id: u.user_id,
                     message: "로그인성공".to_string(),
                     user_name: u.user_name,
-                    accessToken: access_token,
-                    refreshToken: refresh_token,
+                    accesstoken: access_token,
+                    refreshtoken: refresh_token,
                 })
             } else {
                 web::Json(Tokens {
                     user_id: "-".to_string(),
                     user_name: "-".to_string(),
                     message: "비밀번호틀림".to_string(),
-                    accessToken: "-".to_string(),
-                    refreshToken: "".to_string(),
+                    accesstoken: "-".to_string(),
+                    refreshtoken: "".to_string(),
                 })
             }
         }
@@ -120,8 +119,8 @@ pub async fn process_login(data: web::Json<LoginUser>, id: Identity) -> impl Res
                 user_id: "-".to_string(),
                 user_name: "-".to_string(),
                 message: "정보틀림".to_string(),
-                accessToken: "-".to_string(),
-                refreshToken: "".to_string(),
+                accesstoken: "-".to_string(),
+                refreshtoken: "".to_string(),
             })
         }
     }
@@ -135,6 +134,9 @@ pub async fn logout(id: Identity) -> impl Responder {
 //체크 토큰
 pub async fn check_token(data: web::Json<GetTokens>) -> impl Responder {
     dotenv().ok();
+    use crate::db::schema::users::dsl::{user_id, users};
+    let connection = establish_connection();
+
     let secret = std::env::var("APP_SECRET").expect("SECRET_KEY must be set");
     let ref_token = decode::<Claims>(
         &data.refreshtoken,
@@ -142,6 +144,7 @@ pub async fn check_token(data: web::Json<GetTokens>) -> impl Responder {
         &Validation::default(),
     )
     .unwrap();
+
     let acc_token = decode::<Claims>(
         &data.accesstoken,
         &DecodingKey::from_secret(secret.as_bytes()),
@@ -150,50 +153,66 @@ pub async fn check_token(data: web::Json<GetTokens>) -> impl Responder {
     .unwrap();
     let now_time = Utc::now().timestamp_nanos();
     // .unwrap();
-    println!("{:?}", acc_token.claims.exp);
-    if ref_token.claims.exp > now_time {
-        if acc_token.claims.exp > now_time {
-            return web::Json(Tokens {
-                user_id: "-".to_string(),
-                user_name: "-".to_string(),
-                message: "accTokIsLogin".to_string(),
-                accessToken: "-".to_string(),
-                refreshToken: "".to_string(),
-            });
-        } else {
-            let secret = std::env::var("APP_SECRET").expect("SECRET_KEY must be set");
-            let iat = Utc::now();
-            let acc_exp = iat + Duration::days(7);
-            let claim = Claims {
-                // iss: u.user_id,
-                sub: "Quest".to_string(),
-                nbf: iat.timestamp_nanos(),
-                exp: acc_exp.timestamp_nanos(),
-            };
-            let access_token = encode(
-                &Header::default(),
-                &claim,
-                &EncodingKey::from_secret(secret.as_bytes()),
-            )
-            .unwrap();
-            return web::Json(Tokens {
-                user_id: "-".to_string(),
-                user_name: "-".to_string(),
-                message: "accTokCreateLogin".to_string(),
-                accessToken: access_token,
-                refreshToken: "".to_string(),
-            });
+
+    let user = users
+        .filter(user_id.eq(&data.user_id))
+        .first::<User>(&connection);
+
+    match user {
+        Ok(u) => {
+            if ref_token.claims.exp > now_time {
+                if acc_token.claims.exp > now_time {
+                    web::Json(Tokens {
+                        user_id: u.user_id,
+                        user_name: u.user_name,
+                        message: "accTokIsLogin".to_string(),
+                        accesstoken: "-".to_string(),
+                        refreshtoken: "".to_string(),
+                    })
+                } else {
+                    let secret = std::env::var("APP_SECRET").expect("SECRET_KEY must be set");
+                    let iat = Utc::now();
+                    let acc_exp = iat + Duration::days(7);
+                    let claim = Claims {
+                        // iss: u.user_id,
+                        sub: "Quest".to_string(),
+                        nbf: iat.timestamp_nanos(),
+                        exp: acc_exp.timestamp_nanos(),
+                    };
+                    let access_token = encode(
+                        &Header::default(),
+                        &claim,
+                        &EncodingKey::from_secret(secret.as_bytes()),
+                    )
+                    .unwrap();
+                    web::Json(Tokens {
+                        user_id: "-".to_string(),
+                        user_name: "-".to_string(),
+                        message: "accTokCreateLogin".to_string(),
+                        accesstoken: access_token,
+                        refreshtoken: "".to_string(),
+                    })
+                }
+            } else {
+                web::Json(Tokens {
+                    user_id: "-".to_string(),
+                    user_name: "-".to_string(),
+                    message: "tokenEnd".to_string(),
+                    accesstoken: "-".to_string(),
+                    refreshtoken: "".to_string(),
+                })
+            }
         }
-    } else {
-        return web::Json(Tokens {
+        Err(e) => web::Json(Tokens {
             user_id: "-".to_string(),
             user_name: "-".to_string(),
-            message: "tokenEnd".to_string(),
-            accessToken: "-".to_string(),
-            refreshToken: "".to_string(),
-        });
+            message: "userUndifind".to_string(),
+            accesstoken: "-".to_string(),
+            refreshtoken: "".to_string(),
+        }),
     }
 }
+
 //아이디 중복확인
 pub async fn check_id(data: web::Json<GetUser>) -> impl Responder {
     use crate::db::schema::users::dsl::{user_id, users};
